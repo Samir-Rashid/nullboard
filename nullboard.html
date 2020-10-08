@@ -2,34 +2,25 @@
 <html>
 <head>
   <!--
-
 	+-------------------------------------------------------------+
 	|                                                             |
 	|             Nullboard, a minimalist kanban board            |
 	|                    https://nullboard.io                     |
 	|                                                             |
 	+-------------------------------------------------------------+
-
 	LICENSE
-
 	The 2-clause BSD license with the Commons Clause condition.
-
 	IN SHORT
-
 	You can use, change and distribute the software free of charge
 	provided that you do not sell it or make money off it in
 	certain less direct ways as specified below. When distributed,
 	the software must include a complete copy of this license.
-
 	IN FULL
-
 	The Software is provided to you by the Licensor under the
 	License, as defined below, subject to the following condition.
-
 	Without limiting other conditions in the License, the grant of
 	rights under the License will not include, and the License does
 	not grant to you, the right to Sell the Software.
-
 	For purposes of the foregoing, "Sell" means practicing any or
 	all of the rights granted to you under the License to provide
 	to third parties, for a fee or other consideration (including
@@ -39,11 +30,9 @@
 	of the Software. Any license notice or attribution required
 	by the License must also include this Commons Clause License
 	Condition notice.
-
 	Software:  Nullboard
 	License:   The 2-clause BSD License
 	Licensor:  Alexander Pankratov / swapped.ch
-
   -->
   <meta charset="utf-8">
   <title>Nullboard</title>
@@ -128,6 +117,8 @@
 
 		margin: 0 auto;
 		padding: 20px;
+
+		user-select: none;
 	}
 
 	body.crowded .board {
@@ -613,13 +604,15 @@
 		box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 	}
 
-	.config a {
+	.config a,
+	.settings a {
 		display: block;
 		color: #000;
 		transition: color 200ms;
 	}
 
-	.config a:hover {
+	.config a:hover,
+	.settings a:hover {
 		color: #1489db;
 	}
 
@@ -662,14 +655,29 @@
 		color: #000;
 	}
 
-	.config .bulk a i,
-	.config .bulk a b {
+	.config .view-settings {
+		margin: 6px -2px;
+		padding: 6px 2px;
+		border-top: 1px solid #00000028;
+	}
+
+	.settings a i,
+	.settings a b {
 		font-style: normal;
 		font-weight: inherit;
 	}
 
-	.config .bulk a i {
+	.settings a i {
 		display: none;
+	}
+
+	.settings a.switch-theme {
+		padding-top: 6px;
+		margin-top: 6px;
+	}
+
+	.settings h4 {
+		margin-top: 0;
 	}
 
 	.config .bulk input.imp-board-select {
@@ -677,12 +685,6 @@
 		width: 1px;
 		height: 1px;
 		visibility: hidden;
-	}
-
-	.config .bulk a.switch-theme {
-		padding-top: 6px;
-		margin-top: 6px;
-		border-top: 1px solid #00000028;
 	}
 
 	/***/
@@ -779,6 +781,19 @@
 	}
 
 	/***/
+
+	.overlay .settings {
+		font-size: 12px;
+		line-height: 16px;
+		width: 240px;
+		height: auto;
+		padding: 25px;
+		background: #fff;
+		position: absolute;
+		top: 100px;
+		left: 50%;
+		margin-left: -145px;
+	}
 
 	@media print {
 		.logo, .config,
@@ -933,7 +948,7 @@
 	}
 
 	/***/
-	.dark .config {
+	.dark .config, .dark.crowded .config:hover {
 		background-color: #15171A;
 	}
 
@@ -954,15 +969,15 @@
 		color: #fc2;
 	}
 
-	.dark .config .bulk a.switch-theme {
+	.dark .settings a.switch-theme {
 		border-top: 1px solid #fff2;
 	}
 
-	.dark .config a.switch-theme i {
+	.dark .settings a.switch-theme i {
 		display: inline;
 	}
 
-	.dark .config a.switch-theme b {
+	.dark .settings a.switch-theme b {
 		display: none;
 	}
 
@@ -971,7 +986,7 @@
 		color: #ccc;
 	}
 
-	.dark .logo {
+	.dark .logo, .dark.crowded .logo:hover {
 		background: #15171A;
 	}
 
@@ -1073,11 +1088,11 @@
 		width: 15px;
 	}
 
-	.z1 .config a.switch-fsize i {
+	.z1 .settings a.switch-fsize i {
 		display: inline;
 	}
 
-	.z1 .config a.switch-fsize b {
+	.z1 .settings a.switch-fsize b {
 		display: none;
 	}
 
@@ -1097,6 +1112,15 @@
 	.z1 .overlay .about h1 {
 		font-size: 17px;
 		width: 277px;
+	}
+
+	/***/
+	.autosave .settings a.switch-autosave i {
+		display: inline;
+	}
+
+	.autosave .settings a.switch-autosave b {
+		display: none;
 	}
 
 </style>
@@ -1123,8 +1147,7 @@
 			<a href=# class=imp-board>Import board...</a>
 				<input class=imp-board-select type="file" accept=".nbx">
 			<a href=# class=exp-board>Export board...</a>
-			<a href="#" class="switch-theme">Use <i>light</i><b>dark</b> theme</a>
-			<a href="#" class="switch-fsize">Use <i>smaller</i><b>larger</b> font</a>
+			<a href=# class=view-settings>Settings...</a>
 		</div>
 	</div>
 	</div>
@@ -1202,6 +1225,13 @@
 
 		<div class=license>
 		</div>
+
+		<div class=settings>
+			<h4>Settings</h3>
+			<a href="#" class="switch-theme">Use <i>light</i><b>dark</b> theme</a>
+			<a href="#" class="switch-fsize">Use <i>smaller</i><b>larger</b> font</a>
+			<a href="#" class="switch-autosave">Autosave <i>on</i><b>off</b></a>
+		</div>
 	</tt>
 
 </body>
@@ -1211,7 +1241,7 @@
 <script type="text/javascript">
 
 	//
-	var nb_codeVersion = 20200221;
+	var nb_codeVersion = 20200429;
 	var nb_dataVersion = 20190412;
 
 	//
@@ -2606,6 +2636,7 @@
 		return true;
 	});
 
+
 	$('.config .exp-board').click(function(){
 		var board = document.board;
 		var revision = localStorage.getItem('nullboard.board.' + board.id);
@@ -2621,22 +2652,31 @@
 		blob = encodeURIComponent(blob);
 		blob = "data:application/octet-stream," + blob;
 
-		$(this).attr('href', blob);
-		$(this).attr('download', file);
+		thisBoard.attr('href', blob);
+		thisBoard.attr('download', file);
 		return true;
 	});
 
-	$('.config .switch-theme').click(function() {
+	$('.settings .switch-theme').live('click', function() {
 		var $body = $('body');
 		$body.toggleClass('dark');
 		localStorage.setItem('nullboard.theme', $body.hasClass('dark') ? 'dark' : '');
 		return false;
 	});
 
-	$('.config .switch-fsize').click(function(){
+	$('.settings .switch-fsize').live('click', function(){
 		var $body = $('body');
 		$body.toggleClass('z1');
 		localStorage.setItem('nullboard.fsize', $body.hasClass('z1') ? 'z1' : '');
+		return false;
+	});
+
+	$('.settings .switch-autosave').live('click', function(){
+		var $body = $('body');
+		$body.toggleClass('autosave');
+		if (localStorage.getItem('nullboard.autosave') === null)
+			localStorage.setItem('nullboard.autosave', 'false')
+		localStorage.setItem('nullboard.autosave', (localStorage.getItem('nullboard.autosave') === 'true') ? 'false' : 'true');
 		return false;
 	});
 
@@ -2666,6 +2706,13 @@
 
 		var $div = $('tt .license').clone();
 		$div.html(formatLicense());
+		showOverlay($overlay, $div);
+		return false;
+	});
+
+	$('.view-settings').click(function(){
+
+		var $div = $('tt .settings').clone();
 		showOverlay($overlay, $div);
 		return false;
 	});
@@ -2768,6 +2815,9 @@
 
 	if (localStorage.getItem('nullboard.fsize') == 'z1')
 		$('body').addClass('z1');
+	
+	if (localStorage.getItem('nullboard.autosave') === 'true')
+		$('body').addClass('autosave');
 
 	//
 	var board_id = localStorage.getItem('nullboard.last_board');
@@ -2793,6 +2843,31 @@
 	setInterval(adjustListScroller, 100);
 
 	setupListScrolling();
+
+	if (localStorage.getItem('nullboard.autosave') === 'true')
+		saveBoard();
+		exportBoard(); // TODO
+		// console.log($('.config .exp-board'))
+		// (function(){
+		// 	var board = document.board;
+		// 	var revision = localStorage.getItem('nullboard.board.' + board.id);
+		// 	if (! revision)
+		// 		return false;
+
+		// 	var blob = localStorage.getItem('nullboard.board.' + board.id + '.' + revision);
+		// 	if (! blob)
+		// 		return false;
+
+		// 	var file = 'Nullboard-' + board.id + '-' + board.title + '.nbx';
+
+		// 	blob = encodeURIComponent(blob);
+		// 	blob = "data:application/octet-stream," + blob;
+
+		// 	thisBoard=$('.config .exp-board');
+		// 	thisBoard.attr('href', blob);
+		// 	thisBoard.attr('download', file);
+		// 	return true;
+		// });
 
 </script>
 
